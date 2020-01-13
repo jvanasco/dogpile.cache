@@ -24,9 +24,7 @@ class UseTox(TestCommand):
 
 v = open(os.path.join(os.path.dirname(__file__), "dogpile", "__init__.py"))
 VERSION = (
-    re.compile(r""".*__version__ = ["'](.*?)["']""", re.S)
-    .match(v.read())
-    .group(1)
+    re.compile(r""".*__version__ = ["'](.*?)["']""", re.S).match(v.read()).group(1)
 )
 v.close()
 
@@ -56,5 +54,6 @@ setup(
     """,
     zip_safe=False,
     install_requires=["decorator>=4.0.0"],
+    tests_require=["decorator>=4.0.0"],
     cmdclass={"test": UseTox},
 )

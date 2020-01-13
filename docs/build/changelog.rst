@@ -6,6 +6,22 @@ Changelog
     :version: 0.9.1
     :include_notes_from: unreleased
 
+    .. change::
+        :tags: feature
+
+        Applied ``black`` module formatting to this library (v19.10b0).
+
+        .. seealso::
+
+            https://pypi.org/project/black/
+
+    .. change::
+        :tags: bug, setup
+
+        Addded ``decorator`` module to ``tox.ini`` and ``setup.py``'s
+        "tests_require" to ensure it is available for testing.
+
+
 .. changelog::
     :version: 0.9.0
     :released: Mon Oct 28 2019

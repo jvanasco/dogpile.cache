@@ -201,8 +201,8 @@ class RedisBackend(BytesBackend):
                     timeout=self.lock_timeout,
                     sleep=self.lock_sleep,
                     thread_local=self.thread_local_lock,
-                ),
-                blocking_timeout=self.lock_timeout,
+                    blocking_timeout=self.lock_timeout,
+                )
             )
         else:
             return None
@@ -242,20 +242,17 @@ class RedisBackend(BytesBackend):
 
 
 class _RedisLockWrapper:
-    __slots__ = ("mutex", "blocking_timeout", "__weakref__")
+    __slots__ = ("mutex", "__weakref__")
 
     def __init__(
         self,
         mutex: typing.Any,
-        blocking_timeout: typing.Optional[int] = None,
     ):
         self.mutex = mutex
-        self.blocking_timeout = blocking_timeout
 
     def acquire(self, wait: bool = True) -> typing.Any:
         return self.mutex.acquire(
             blocking=wait,
-            blocking_timeout=self.blocking_timeout,
         )
 
     def release(self) -> typing.Any:

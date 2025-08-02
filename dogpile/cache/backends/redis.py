@@ -1,3 +1,11 @@
+from __future__ import annotations
+
+import typing
+import warnings
+
+from ..api import BytesBackend
+from ..api import NO_VALUE
+
 """
 Redis Backends
 ------------------
@@ -6,14 +14,8 @@ Provides backends for talking to `Redis <http://redis.io>`_.
 
 """
 
-import typing
-import warnings
-
-from ..api import BytesBackend
-from ..api import NO_VALUE
-
 if typing.TYPE_CHECKING:
-    import redis
+    import redis  # noqa: I300
 else:
     # delayed import
     redis = None  # noqa F811
@@ -113,10 +115,6 @@ class RedisBackend(BytesBackend):
      ``charset``, etc.
 
      .. versionadded:: 1.1.6
-
-
-
-
     """
 
     def __init__(self, arguments):
@@ -203,7 +201,8 @@ class RedisBackend(BytesBackend):
                     timeout=self.lock_timeout,
                     sleep=self.lock_sleep,
                     thread_local=self.thread_local_lock,
-                )
+                ),
+                blocking_timeout=self.lock_timeout,
             )
         else:
             return None
@@ -243,13 +242,21 @@ class RedisBackend(BytesBackend):
 
 
 class _RedisLockWrapper:
-    __slots__ = ("mutex", "__weakref__")
+    __slots__ = ("mutex", "blocking_timeout", "__weakref__")
 
-    def __init__(self, mutex: typing.Any):
+    def __init__(
+        self,
+        mutex: typing.Any,
+        blocking_timeout: typing.Optional[int] = None,
+    ):
         self.mutex = mutex
+        self.blocking_timeout = blocking_timeout
 
     def acquire(self, wait: bool = True) -> typing.Any:
-        return self.mutex.acquire(blocking=wait)
+        return self.mutex.acquire(
+            blocking=wait,
+            blocking_timeout=self.blocking_timeout,
+        )
 
     def release(self) -> typing.Any:
         return self.mutex.release()

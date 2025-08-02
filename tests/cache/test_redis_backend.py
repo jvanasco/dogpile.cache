@@ -74,6 +74,7 @@ class RedisAsyncCreationTest(_TestRedisConn, _GenericBackendFixture):
             "distributed_lock": True,
             # This is the important bit:
             "thread_local_lock": False,
+            "lock_timeout": 10,
         }
     }
 
